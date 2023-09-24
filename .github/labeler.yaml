@@ -1,0 +1,8 @@
+backend:
+  - any: ["src/backend/**", "!src/backend/microservice-refactor/**"]
+
+frontend: src/middleware/**
+
+middleware: src/frontend/**
+
+refactor: src/backend/microservice-refactor/**
