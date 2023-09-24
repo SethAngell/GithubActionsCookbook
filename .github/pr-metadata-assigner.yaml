@@ -1,0 +1,62 @@
+name: PR-Metadata-Assigner
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # ------------------------------------------------------------------------------------------------------------------------------------------------
+  # Event `pull_request`: Compare the last commit of the main branch or last remote commit of the PR branch -> to the current commit of a PR branch.
+  # ------------------------------------------------------------------------------------------------------------------------------------------------
+  Determine-Changed-Files:
+    runs-on: ubuntu-latest
+    name: Determine Changed Files
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # Example 1
+      - name: Get all frontend, backend and middleware files that have changed
+        id: changed-files-yaml
+        uses: tj-actions/changed-files@v39
+        with:
+          files_yaml: |
+            backend:
+              - src/backend/**/
+              - !src/backend/microservice-refactor/**
+            middleware:
+              - src/middleware/**
+            frontend:
+              - src/frontend/**
+            refactor:
+              - src/backend/microservice-refactor/**
+
+      - name: Report changed backend files
+        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
+        if: steps.changed-files-yaml.outputs.backend_any_changed == 'true'
+        run: |
+          echo "One or more backend file(s) has changed."
+          echo "List all the files that have changed: ${{ steps.changed-files-yaml.outputs.backend_all_changed_files }}"
+
+      - name: Report changed frontend files
+        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
+        if: steps.changed-files-yaml.outputs.frontend_any_changed == 'true'
+        run: |
+          echo "One or more frontend file(s) has changed."
+          echo "List all the files that have changed: ${{ steps.changed-files-yaml.outputs.frontend_all_changed_files }}"
+
+      - name: Report changed middleware files
+        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
+        if: steps.changed-files-yaml.outputs.middleware_any_changed == 'true'
+        run: |
+          echo "One or more middleware file(s) has changed."
+          echo "List all the files that have changed: ${{ steps.changed-files-yaml.outputs.middleware_all_changed_files }}"
+
+      - name: Report changed refactor files
+        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
+        if: steps.changed-files-yaml.outputs.refactor_any_changed == 'true'
+        run: |
+          echo "One or more refactor file(s) has changed."
+          echo "List all the files that have changed: ${{ steps.changed-files-yaml.outputs.refactor_all_changed_files }}"
