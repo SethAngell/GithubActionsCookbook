@@ -1,0 +1,19 @@
+# =================================================================== #
+# PR Auto Label Config
+# =================================================================== #
+backend:
+  - any: ["src/backend/**", "!src/backend/microservice-refactor/**"]
+
+frontend: src/middleware/**
+
+middleware: src/frontend/**
+
+refactor: src/backend/microservice-refactor/**
+
+"developer experience": .github/**
+
+# =================================================================== #
+# PR Auto Assign Config
+# =================================================================== #
+
+addAssignees: author
